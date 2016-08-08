@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+<head>
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+<script type="text/javascript">
+function draw(){
+	var canvas = document.getElementById('canvas');
+	if ( ! canvas || ! canvas.getContext ) { return false; }
+	var ctx = canvas.getContext('2d');
+	ctx.clearRect(0,0,800,400);
+	var input_raw = $("#in").val();
+	ctx.beginPath();
+	ctx.strokeStyle = 'rgb(155, 155, 155)';
+	ctx.setLineDash([1,8])
+	for(var i=0;i<800;i+=100){
+		ctx.moveTo(i,0);
+		ctx.lineTo(i,400);
+	}
+	for(var i=0;i<400;i+=100){
+		ctx.moveTo(0,i);
+		ctx.lineTo(800,i);
+	}
+	console.log(input_raw);
+	ctx.closePath();
+	ctx.stroke();
+
+	ctx.beginPath();
+	ctx.strokeStyle = 'rgb(0, 0, 0)';
+	ctx.setLineDash([1,8])
+	ctx.moveTo(0,200);
+	ctx.lineTo(800,200);
+	ctx.moveTo(400,0);
+	ctx.lineTo(400,400);
+	ctx.closePath();
+	ctx.stroke();
+
+	
+	if(input_raw == ""){
+		return;
+	}
+	ctx.beginPath();
+	ctx.strokeStyle = 'rgb(0, 0, 0)';
+	ctx.setLineDash([0]);
+	var lines = [
+	];
+	var input_lines = input_raw.split(/\r\n|\r|\n/);
+	for(var key in input_lines){
+		if(input_lines[key] == "") continue;
+		var edge = input_lines[key].split(" ");
+		var coor1 = edge[0].split(",");
+		var coor2 = edge[1].split(",");
+		lines.push({x1:eval(coor1[0]) + 4,y1:eval(coor1[1]) + 2,x2:eval(coor2[0]) + 4,y2:eval(coor2[1]) + 2});
+	}
+	for(var key in lines){
+		var line  = lines[key];
+		console.log(line);
+		ctx.moveTo(line.x1*100,400-line.y1*100);
+		ctx.lineTo(line.x2*100,400-line.y2*100);
+	}
+	ctx.closePath();
+	ctx.stroke();
+}
+</script>
+</head>
+<body onload="draw();">
+<h1>Visualizer</h1>
+<canvas id="canvas" width="800" height="400" style="border:1px solid #888;"></canvas>
+<h3>Input</h3>
+<textarea id="in" style="width:800px;height:200px;" onChange="draw();"></textarea>
+<input type="button" onclick="draw();" value="表示">
+</body>
+</html>
